@@ -2,17 +2,18 @@
 
 internal enum PracticeTask
 {
-  FångaUndantag,
+  ParseIntegerWithExceptionHandling,
+  DivideTwoNumbers,
 }
 
 internal static class Program
 {
   internal static void Main()
   {
-    PracticeTask exercise = PracticeTask.FångaUndantag;
+    PracticeTask exercise = PracticeTask.DivideTwoNumbers;
     switch (exercise)
     {
-      case PracticeTask.FångaUndantag:
+      case PracticeTask.ParseIntegerWithExceptionHandling:
         /*  Övning 1 - Konvertera sträng till tal */
 
         /*  Använd try/catch för att hantera FormatException om strängen inte är ett giltigt tal.
@@ -25,7 +26,7 @@ internal static class Program
           string userInput = Console.ReadLine() ?? "";
           try
           {
-            int input = int.Parse(userInput);
+            int parsedNumber = int.Parse(userInput);
             break;
           }
           catch (FormatException)
@@ -39,6 +40,64 @@ internal static class Program
         }
 
         break;
+      case PracticeTask.DivideTwoNumbers:
+        decimal numerator = ReadValidDecimalFromUser();
+        decimal denominator = ReadValidDecimalFromUser();
+
+        try
+        {
+          decimal divisionResult = DivideTwoNumbers(numerator, denominator);
+          Console.WriteLine($"Resultatet blir: {divisionResult}");
+        }
+        catch (DivideByZeroException)
+        {
+          Console.WriteLine("Du kan inte dela med noll");
+        }
+
+        break;
+    }
+    decimal DivideTwoNumbers(decimal numerator, decimal denominator)
+    {
+      return numerator / denominator;
+    }
+
+    decimal ReadValidDecimalFromUser()
+    {
+      while (true)
+      {
+        string userInput = ReadNumberInputFromUser();
+        decimal? parsedNumber = TryParseDecimal(userInput);
+
+        if (parsedNumber.HasValue)
+        {
+          return parsedNumber.Value;
+        }
+      }
+    }
+
+    string ReadNumberInputFromUser()
+    {
+      Console.WriteLine("skriv ett tal");
+      string userInput = Console.ReadLine() ?? "";
+      return userInput;
+    }
+
+    decimal? TryParseDecimal(string userInput)
+    {
+      try
+      {
+        return decimal.Parse(userInput);
+      }
+      catch (FormatException)
+      {
+        Console.WriteLine("Skriv ut ett giltigt tal");
+        return null;
+      }
+      catch
+      {
+        Console.WriteLine("Något gick fel");
+        return null;
+      }
     }
   }
 }
