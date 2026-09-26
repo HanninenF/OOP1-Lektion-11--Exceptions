@@ -4,13 +4,14 @@ internal enum PracticeTask
 {
   ParseIntegerWithExceptionHandling,
   DivideTwoNumbers,
+  ReadFromFileExceptions,
 }
 
 internal static class Program
 {
-  internal static void Main()
+  internal static async Task Main()
   {
-    PracticeTask exercise = PracticeTask.DivideTwoNumbers;
+    PracticeTask exercise = PracticeTask.ReadFromFileExceptions;
     switch (exercise)
     {
       case PracticeTask.ParseIntegerWithExceptionHandling:
@@ -52,6 +53,37 @@ internal static class Program
         catch (DivideByZeroException)
         {
           Console.WriteLine("Du kan inte dela med noll");
+        }
+
+        break;
+      case PracticeTask.ReadFromFileExceptions:
+        bool removeFile = true;
+
+        try
+        {
+          string readFile = await File.ReadAllTextAsync("Program.cs");
+
+          await File.AppendAllTextAsync("Program2.cs", readFile);
+
+          if (removeFile)
+          {
+            await Task.Delay(3000);
+            File.Delete("Program2.cs");
+          }
+
+          await File.ReadAllTextAsync(Directory.GetCurrentDirectory());
+        }
+        catch (FileNotFoundException)
+        {
+          await Console.Error.WriteLineAsync("The file does not exist");
+        }
+        catch (OperationCanceledException)
+        {
+          await Console.Error.WriteLineAsync("Operation was cancelled");
+        }
+        catch (UnauthorizedAccessException)
+        {
+          await Console.Error.WriteLineAsync("You are not authorized");
         }
 
         break;
