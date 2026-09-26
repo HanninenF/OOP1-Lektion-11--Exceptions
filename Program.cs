@@ -1,12 +1,5 @@
 ﻿namespace P01;
 
-internal enum PracticeTask
-{
-  ParseIntegerWithExceptionHandling,
-  DivideTwoNumbers,
-  ReadFromFileExceptions,
-}
-
 internal static class Program
 {
   internal static async Task Main()
@@ -16,13 +9,31 @@ internal static class Program
       Console.WriteLine("0: Konvertera sträng till heltal");
       Console.WriteLine("1: Dividera två tal");
       Console.WriteLine("2: Läs från fil");
+      Console.WriteLine("3: Avsluta");
 
       string menuInput = Console.ReadLine() ?? "";
+      bool isMenuInputAnInteger = int.TryParse(menuInput, out int input);
+      bool isPracticeTaskNumber = Enum.IsDefined(typeof(PracticeTask), input);
 
-      if (!int.TryParse(menuInput, out int input) || !Enum.IsDefined(typeof(PracticeTask), input))
+      int[] taskNumbers = [.. Enum.GetValues<PracticeTask>().Select(task => (int)task)];
+      string errorMessage = "Välj ";
+
+      foreach (int number in taskNumbers.SkipLast(1))
       {
-        Console.WriteLine("Välj 0, 1 eller 2.");
+        errorMessage += $"{number}, ";
+      }
+      errorMessage += $"eller {taskNumbers.Length - 1}";
+
+      if (!isMenuInputAnInteger || !isPracticeTaskNumber)
+      {
+        Console.WriteLine(errorMessage);
         continue;
+      }
+
+      if (input == taskNumbers.Length - 1)
+      {
+        Console.WriteLine("Hej då!");
+        break;
       }
 
       PracticeTask exercise = (PracticeTask)input;
